@@ -1,6 +1,10 @@
 # LabyBot
 *A pure Python, text-interface clone and solver of the Laby game*
 
+## Installation
+
+`pip install laby_bot`
+
 ## What's it for?
 
 This package has a couple of purposes:
