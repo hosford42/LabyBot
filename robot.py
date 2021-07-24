@@ -1,6 +1,4 @@
-"""This is just a stub file, here to get rid of syntax errors while writing the bot code before
-pasting it in. Eventually I want to make this into an actual clone of the functionality of the Laby
-game."""
+"""A text-only clone of the Laby game."""
 
 import os
 import random
