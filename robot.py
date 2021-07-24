@@ -1,4 +1,4 @@
-"""A text-only clone of the Laby game."""
+"""A pure Python, text-interface clone of the Laby game."""
 
 import os
 import random
