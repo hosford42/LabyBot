@@ -1,7 +1,7 @@
 import unittest
 
-import robot
 import laby_bot
+from laby_bot import robot
 
 
 class TestDesignedLevels(unittest.TestCase):
