@@ -59,7 +59,7 @@ def sign(value):
     return 1 if value >= 0 else -1
 
 
-class Navigator:
+class Solver:
 
     def __init__(self):
         self.level_map = {}
@@ -148,6 +148,15 @@ class Navigator:
         else:
             return False
 
+    def drop_and(self, action):
+        original = self.looking
+        if self.carrying_rock:
+            for direction in range(4):
+                if direction != original and self.drop(direction):
+                    break
+        self.turn(original)
+        return action()
+
     def clear(self, direction=0):
         if self.carrying_rock and self.look(direction) == Web:
             self.turn(direction)
@@ -185,12 +194,51 @@ class Navigator:
                                              self.distance_to(position,
                                                               self.next_position(direction))))
 
+    def run(self):
+        while True:
+            self.look()
 
-def drop_and(navigator, action):
-    original = navigator.looking
-    if navigator.carrying_rock:
-        for direction in range(4):
-            if direction != original and navigator.drop(direction):
-                break
-    navigator.turn(original)
-    return action()
+            if self.carrying_rock:
+                preferences = (Exit, Web, Void, Rock, Unknown, None)
+            else:
+                preferences = (Exit, Void, Rock, Unknown, None)
+
+            unvisited = set(self.iter_unvisited(preferences))
+            if not unvisited:
+                say("I'm trapped!")
+                return
+
+            nearest = min(unvisited,
+                          key=lambda position: (
+                                  self.distance_to(position) *
+                                  self.distance_to(position, self.last_explored_position)
+                          ))
+            # say("Nearest distance: %s" % (navigator.distance_to(nearest),))
+            for direction in self.directions_to(nearest):
+                seen = self.look(direction)
+                if seen == Exit:
+                    say("Aha!")
+                    self.turn(direction)
+                    self.drop_and(escape)
+                    return
+                elif seen in (Void, Unknown):
+                    self.move(direction)
+                    break
+                elif seen == Rock:
+                    if self.carrying_rock:
+                        say("Hmm...")
+                    self.turn(direction)
+                    assert self.drop_and(lambda: self.take(direction))
+                    self.move(direction)
+                    break
+                elif self.carrying_rock and seen == Web:
+                    self.clear(direction)
+                    say("Ha!")
+                    self.move(direction)
+                elif seen != Wall:
+                    say("Nope!")
+
+
+def run():
+    solver = Solver()
+    solver.run()
