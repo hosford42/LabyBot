@@ -209,8 +209,6 @@ class LevelGenerator:
             'right': random.random(),
             'backward': random.random()
         }
-        print(self.state_weights)
-        print(self.direction_weights)
 
     @staticmethod
     def weighted_random(weight_map):
